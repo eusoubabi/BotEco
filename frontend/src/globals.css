@@ -1,0 +1,35 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* ITEM ATIVO NA SIDEBAR */
+.nav-active {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  border-left: 4px solid #06173b; /* dourado */
+  padding-left: 12px !important;
+  font-weight: 600;
+  color: #001f3f !important; /* azul marinho */
+}
+
+/* Hover suave nos itens */
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+  padding-left: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-item {
+  color: white;
+  opacity: 0.9;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.nav-active {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-weight: bold;
+}
