@@ -3,10 +3,10 @@
 #include <WebServer.h>
 
 // ===============================
-// CONFIGURAÇÃO WI-FI
+// CONFIGURAÇÃO WI-FI (MODO STA)
 // ===============================
-const char* ssid = "Robo_Entregas";
-const char* password = "senha_segura";
+const char* ssid = "Barbara Rodrigues's A52s";        // <-- altere
+const char* password = "trfg3246";  // <-- altere
 
 WebServer server(80);
 
@@ -88,7 +88,7 @@ int passoAtual = 0;
 unsigned long inicioPasso = 0;
 
 // ===============================
-// SISTEMA DE ROTAS
+// ROTAS
 // ===============================
 void iniciarRota(Passo passos[], int tamanho) {
   memcpy(rotaAtual, passos, sizeof(Passo) * tamanho);
@@ -101,43 +101,36 @@ void iniciarRota(Passo passos[], int tamanho) {
   rotaAtual[0].movimento();
 }
 
-// ===============================
-// ROTAS DEFINIDAS
-// ===============================
+// ROTA A (IDA: frente 5s → parar)
 Passo rotaA_ida[] = {
   {frente, 5000},
   {parar, 500},
-  {direita, 5000},
-  {parar, 500}
 };
 
+// ROTA A (VOLTA: trás 5s → parar)
 Passo rotaA_volta[] = {
-  {direita, 1500}, // giro 180
-  {parar, 300},
   {tras, 5000},
   {parar, 500},
-  {direita, 5000},
-  {parar, 500}
 };
 
+// ROTA B (IDA: esquerda → frente 5s → parar)
 Passo rotaB_ida[] = {
+  {esquerda, 800},
+  {parar, 300},
   {frente, 5000},
   {parar, 500},
-  {esquerda, 5000},
-  {parar, 500}
 };
 
+// ROTA B (VOLTA: trás 5s → direita → parar)
 Passo rotaB_volta[] = {
-  {esquerda, 1500}, // giro 180
-  {parar, 300},
   {tras, 5000},
+  {parar, 300},
+  {direita, 800},
   {parar, 500},
-  {esquerda, 5000},
-  {parar, 500}
 };
 
 // ===============================
-// GERENCIAMENTO NÃO BLOQUEANTE
+// LOOP NÃO BLOQUEANTE
 // ===============================
 void loopRota() {
   if (estadoRota != "andando") return;
@@ -158,32 +151,32 @@ void loopRota() {
 }
 
 // ===============================
-// ENDPOINTS WEB
+// ENDPOINTS
 // ===============================
 void executarAIda() {
-  iniciarRota(rotaA_ida, 4);
-  server.send(200, "text/plain", "Rota A IDA iniciada");
+  iniciarRota(rotaA_ida, 2);
+  server.send(200, "text/plain", "OK");
 }
 
 void executarAVolta() {
-  iniciarRota(rotaA_volta, 6);
-  server.send(200, "text/plain", "Rota A VOLTA iniciada");
+  iniciarRota(rotaA_volta, 2);
+  server.send(200, "text/plain", "OK");
 }
 
 void executarBIda() {
   iniciarRota(rotaB_ida, 4);
-  server.send(200, "text/plain", "Rota B IDA iniciada");
+  server.send(200, "text/plain", "OK");
 }
 
 void executarBVolta() {
-  iniciarRota(rotaB_volta, 6);
-  server.send(200, "text/plain", "Rota B VOLTA iniciada");
+  iniciarRota(rotaB_volta, 4);
+  server.send(200, "text/plain", "OK");
 }
 
 void executarParar() {
   parar();
   estadoRota = "parado";
-  server.send(200, "text/plain", "Robô parado");
+  server.send(200, "text/plain", "OK");
 }
 
 void statusRota() {
@@ -209,7 +202,17 @@ void setup() {
 
   parar();
 
-  WiFi.softAP(ssid, password);
+  Serial.println("Conectando ao Wi-Fi...");
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.print("Conectado! IP do robô: ");
+  Serial.println(WiFi.localIP());
 
   server.on("/api/rota/a_ida", executarAIda);
   server.on("/api/rota/a_volta", executarAVolta);
