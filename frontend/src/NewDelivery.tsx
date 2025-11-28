@@ -17,7 +17,7 @@ export default function NewDelivery() {
       const r = await fetch(`${API_URL}/api/rota/${rota}`, { method: "POST" });
 
       if (!r.ok) {
-        alert("Falha ao comunicar com o backend.");
+        console.error("Falha ao comunicar com o backend.");
         setLoading(false);
         return;
       }
@@ -27,7 +27,7 @@ export default function NewDelivery() {
       alert(`Entrega enviada ao Setor ${destino}!`);
       setItem("");
     } catch {
-      alert("Não foi possível se comunicar com o robô.");
+      console.error("Não foi possível se comunicar com o robô.");
     }
 
     setLoading(false);
